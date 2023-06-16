@@ -33,7 +33,7 @@ if(isset($_GET['id'])){
                 $_SESSION['goal'] = $goal;
                 $_SESSION['raised'] = $raised;
     }}
-
+    
 ?>
 
 
@@ -104,7 +104,7 @@ progressBars.forEach(function(progressBar) {
             <input type="number" name="amount" id="custom-amount" min="150" max="<?php echo $_SESSION['goal'] - $_SESSION['raised']; ?>"  value="150" oninput="validateAmount(this)">
         </div>
         <div class="btn-box">
-            <button class="cart-btn"  id="customButton" >Donate now</button>
+            <button class="cart-btn" id="customButton" >Donate now</button>
         </div>
         <input type="hidden" id="d_id" name="d_id" value="<?php echo $_SESSION['D_ID']; ?>"/>
         <input type="hidden" id="raised" name="raised" value="<?php echo $_SESSION['raised']; ?>"/>
@@ -113,55 +113,58 @@ progressBars.forEach(function(progressBar) {
         <input type="hidden" id="stripeTokenType" name="stripeTokenType" />
     </form>
 
+
     <script src="https://checkout.stripe.com/checkout.js"></script>
 
 <script>
+  $(document).ready(function() {
     var handler = StripeCheckout.configure({
-  key: 'pk_test_51NGkFsB04oOr8KKDpKbjLQrwcw5Ne7skNIJu7u34LoT5XczQy6sde1D5j0ERqYDThoVswYAGcjVuRN4eCvAu8W0000iIqZO0gN',
-  image: '<?php echo str_replace('..', '.',$_SESSION['D_IMG']); ?>',
-  token: function(token) {
-    $("#stripeToken").val(token.id);
-    $("#stripeEmail").val(token.email);
-    $("#stripeTokenType").val(token.type);
-    $("#myForm").submit();
-  }
-});
+      key: 'pk_test_51NGkFsB04oOr8KKDpKbjLQrwcw5Ne7skNIJu7u34LoT5XczQy6sde1D5j0ERqYDThoVswYAGcjVuRN4eCvAu8W0000iIqZO0gN',
+      image: '<?php echo str_replace('..', '.',$_SESSION['D_IMG']); ?>',
+      token: function(token) {
+        $("#stripeToken").val(token.id);
+        $("#stripeEmail").val(token.email);
+        $("#stripeTokenType").val(token.type);
+        $("#myForm").submit();
+      }
+    });
 
-$('#customButton').on('click', function(e) {
-  var amount= Math.floor($("#custom-amount").val() * 100);
-  var displayAmount = parseFloat(Math.floor($("#custom-amount").val() * 100) / 100).toFixed(2);
-  // Open Checkout with further options
-  handler.open({
-    name: '<?php echo $_SESSION['D_TITLE']?>',
-    description: 'Donation Amount (PKR' + displayAmount + ')',
-    currency:"pkr",
-    amount: amount,
-    email: '<?php echo $_SESSION['email']?>',
-    
+    $('#customButton').on('click', function(e) {
+      var amount = Math.floor($("#custom-amount").val() * 100);
+      var displayAmount = parseFloat(Math.floor($("#custom-amount").val() * 100) / 100).toFixed(2);
+
+      handler.open({
+        name: '<?php echo $_SESSION['D_TITLE']?>',
+        description: 'Donation Amount (PKR' + displayAmount + ')',
+        currency: 'pkr',
+        amount: amount,
+        email: '<?php echo $_SESSION['email']?>',
+      });
+
+      e.preventDefault();
+    });
+
+    // Close Checkout on page navigation
+    $(window).on('popstate', function() {
+      handler.close();
+    });
   });
-  e.preventDefault();
-});
-
-// Close Checkout on page navigation
-$(window).on('popstate', function() {
-  handler.close();
-});
 </script>
 
+<script>
+  function validateAmount(input) {
+    const maxAmount = <?php echo $_SESSION['goal'] - $_SESSION['raised']; ?>;
+    const value = parseInt(input.value);
+    if (value > maxAmount) {
+      input.value = maxAmount;
+    }
+  }
 
-    <script>
-        function validateAmount(input) {
-            const maxAmount = <?php echo $_SESSION['goal'] - $_SESSION['raised']; ?>;
-            const value = parseInt(input.value);
-            if (value > maxAmount) {
-                input.value = maxAmount;
-            }
-        }
+  function updateAmount(value) {
+    document.getElementById("custom-amount").value = value;
+  }
+</script>
 
-        function updateAmount(value) {
-            document.getElementById("custom-amount").value = value;
-        }
-    </script>
 </div>
 
     </div>
@@ -172,4 +175,5 @@ $(window).on('popstate', function() {
 <?php
 include('bot.php');
 include('footer.php');
+    
 ?>
