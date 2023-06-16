@@ -1,5 +1,8 @@
-# One-Cause
+<h1 align="center">One Cause (A Donation Website)</h1>
 
+<h2 align="center">
+<a href="https://1cause.000webhostapp.com/One-Cause-main/">Demo</a>
+</h2>
 ## Steps for executing website
 To run a the project in XAMPP, you need to follow these steps:
 <ul>
