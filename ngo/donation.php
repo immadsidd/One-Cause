@@ -6,9 +6,23 @@ include('slidebar.php');
 if(isset($_SESSION['is_ngoLogin'])){
     $email = $_SESSION['email'];
 }
+$sql = "SELECT * FROM donation WHERE id=(SELECT id FROM ngotable WHERE email = '".$email."') AND  d_status='in progress'";
 
-?>
-<?php
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $d_id = $row['d_id']; // Add the missing semicolon here
+
+        $currentDateTime = new DateTime();
+        $deadlineDateTime = new DateTime($row['d_deadline']);
+
+        if ($currentDateTime >= $deadlineDateTime) {
+            $sql = "UPDATE donation SET d_status='Deadline met' WHERE d_id='$d_id'";
+            $conn->query($sql);
+        }
+    }
+}
+
 
 ?>
 
@@ -22,7 +36,8 @@ if(isset($_SESSION['is_ngoLogin'])){
     <select name="status" onchange="this.form.submit()">
         <option value="">select status</option>
         <option value="in progress">in progress</option>
-		<option value="Accomplished">Accomplished</option>
+	<option value="Accomplished">Accomplished</option>
+        <option value="Deadline met">Deadlline met</option>
     </select>
 </form>
     <?php
