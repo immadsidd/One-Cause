@@ -6,7 +6,7 @@ include('slidebar.php');
 if(isset($_SESSION['is_ngoLogin'])){
     $email = $_SESSION['email'];
 }
-$sql = "SELECT * FROM donation WHERE id = (SELECT id FROM ngotable WHERE email = '".$email."') AND d_status = 'in'";
+$sql = "SELECT * FROM donation WHERE id = (SELECT id FROM ngotable WHERE email = '".$email."') AND d_status = 'in progress'";
 $pr_result = mysqli_query($con, $sql);
 $total_record = mysqli_num_rows($pr_result);
 
