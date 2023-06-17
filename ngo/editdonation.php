@@ -48,8 +48,8 @@ if(isset($_REQUEST['submit'])){
         <form action="" method="POST" enctype="multipart/form-data">
         <h3 class="text text-center"> Edit Cause</h3>
 
-        <b><label for="d_deadline">Deadline</label></b>
-        <input type="date" class="form-control" id="d_deadline" 
+        <b><label for="d_deadline">Deadline</label></b> <span id="error" style="color: red; font-size:14px;"></span>
+        <input type="date" class="form-control" id="d_deadline" onchange="validateDeadline()"
         name="d_deadline" value="<?php if(isset($row['d_deadline'])){echo $row['d_deadline'];} ?>"><br>
 
         <b><label for="d_title">Cause Title</label></b>
@@ -79,3 +79,21 @@ if(isset($_REQUEST['submit'])){
 </form>
     </div>
 </section>
+<script>
+  function validateDeadline() {
+    var deadlineInput = document.getElementById('d_deadline');
+    var deadlineDate = new Date(deadlineInput.value);
+    var currentDate = new Date();
+
+    var submitButton = document.getElementById('submit');
+    var errorSpan = document.getElementById('error');
+    
+    if (deadlineDate < currentDate) {
+      submitButton.disabled = true;
+      errorSpan.textContent = " Please enter a future date.";
+    } else {
+      submitButton.disabled = false;
+      errorSpan.textContent = "";
+    }
+  }
+</script>
