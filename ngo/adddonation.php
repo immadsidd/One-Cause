@@ -39,8 +39,8 @@ else{
         <form action="" method="POST" enctype="multipart/form-data">
         <h3 class="text text-center"> Add New Cause</h3><br>
 
-        <label for="d_deadline">Deadline</label>
-        <input type="date" class="form-control" id="d_deadline" 
+        <label for="d_deadline">Deadline</label> <span id="error" style="color: red; font-size:14px;"></span>
+        <input type="date" class="form-control" id="d_deadline" onchange="validateDeadline()"
         name="d_deadline"><br>
 
         <label for="d_title">Cause Title</label>
@@ -69,3 +69,22 @@ else{
 </form>
 </div>
 </section>
+
+<script>
+  function validateDeadline() {
+    var deadlineInput = document.getElementById('d_deadline');
+    var deadlineDate = new Date(deadlineInput.value);
+    var currentDate = new Date();
+
+    var submitButton = document.getElementById('submit');
+    var errorSpan = document.getElementById('error');
+    
+    if (deadlineDate < currentDate) {
+      submitButton.disabled = true;
+      errorSpan.textContent = " Please enter a future date.";
+    } else {
+      submitButton.disabled = false;
+      errorSpan.textContent = "";
+    }
+  }
+</script>
